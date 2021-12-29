@@ -82,7 +82,7 @@ class SimulateBasketPrices:
         basket_prices = []
         for i in range(self.n_prices):
             basket = BasketOption(weights[i], prices[i],
-                                  vol, corr, strikes[i], 
+                                  vols[i], corr, strikes[i], 
                                   times[i].astype('float'), rate)
             basket_prices.append(basket.get_levy_price())
         
