@@ -23,13 +23,23 @@ class SimulateBasketPrices:
 
     def get_price_list(self, base_price):
         if len(base_price) == self.n_assets:
-            rand_jitter = (np.random.randn(self.n_prices * 4)*10)\
-                            .reshape((self.n_prices,4))
+            rand_jitter = (np.random.randn(self.n_prices * self.n_assets)*10)\
+                            .reshape((self.n_prices,self.n_assets))
             prices = rand_jitter + base_price
         else:
             prices = np.random.randn(self.n_prices)*10 + base_price
         
-        return prices
+        return prices        
+
+    def get_weight_list(self, weights):
+        if weights is None:
+            weights = (np.random.rand(self.n_prices * self.n_assets))\
+                        .reshape((self.n_prices,self.n_assets))
+            weights = weights / np.sum(weights, axis=1)[:, np.newaxis]
+        else:
+            weights = np.tile(weights, (self.n_prices,1))
+        
+        return weights
 
     def get_df(self, values, prefix=None):
         df = pd.DataFrame(values)
@@ -52,7 +62,7 @@ class SimulateBasketPrices:
             Average strike of the simulated assets
             Default is strike equal to price of first asset
         weights : ndarray, optional
-            Weights of each asset in the basket. Default is equal weighting
+            Weights of each asset in the basket. Default is random weighting
         rate : float, optional
             Risk-free interest rate
         '''
@@ -64,19 +74,16 @@ class SimulateBasketPrices:
         if base_strike is None:
             base_strike = base_price[0]
 
-        if weights is None:
-            weights = np.array([1./self.n_assets,]*self.n_assets)
-
+        weights = self.get_weight_list(weights)
         basket_prices = []
         for i in range(self.n_prices):
-            basket = BasketOption(weights, prices[i],
+            basket = BasketOption(weights[i], prices[i],
                                   vol, corr, base_strike, 
                                   times[i].astype('float'), rate)
             basket_prices.append(basket.get_levy_price())
         
         prices_df = self.get_df(prices, prefix='Price')
-        weights_df = self.get_df(np.tile(weights, (self.n_prices,1)),
-                                 prefix='Weight')
+        weights_df = self.get_df(weights, prefix='Weight')
 
         self.simulated_baskets = pd.DataFrame({
                                     'Strike' : base_strike,
