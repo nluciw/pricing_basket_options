@@ -111,10 +111,27 @@ class BasketOption:
         return self.bs_price
 
     def get_ann_price(self, model):
+        '''
+        Use network model to estimate option price. This function allows estimation of one-asset 
+        options with a network trained to estimate 4-asset basket option prices.        
+        '''
 
-        price_weights = np.append(self.prices, self.weights)
+        config = model.get_config() # Returns pretty much every information about your model
+        n_assets = int((config["layers"][0]["config"]["batch_input_shape"][1] - 4)/2)
+        
+        # Pad with the single price if trying to estimate single-asset option price
+        p = np.pad(self.prices, (0, int(max(n_assets-len(self.prices),0))), constant_values=self.prices[0])
+        # If single-asset option, assign very small weights to the padded assets
+        if len(self.weights) < n_assets: 
+            # Assume we're using a multi-asset model on a one-asset option
+            w = np.pad(self.weights, (0, int(max(n_assets-len(self.prices),0))), constant_values=0.001)
+            w[0] = 1-(n_assets-1)*0.001
+        else:
+            w = self.weights.copy()
+        
+        price_weights = np.append(p, w)
         X = np.append(price_weights, [self.strike, self.time, self.vol, self.rate])
 
-        self.ann_price = model.predict(X[np.newaxis,:])
+        self.ann_price = model.predict(X[np.newaxis,:])[0][0]
 
         return self.ann_price
