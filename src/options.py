@@ -109,3 +109,12 @@ class BasketOption:
                         - stats.norm.cdf(d2)*self.strike*np.exp(-self.rate*self.time)
         
         return self.bs_price
+
+    def get_ann_price(self, model):
+
+        price_weights = np.append(self.prices, self.weights)
+        X = np.append(price_weights, [self.strike, self.time, self.vol, self.rate])
+
+        self.ann_price = model.predict(X[np.newaxis,:])
+
+        return self.ann_price
