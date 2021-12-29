@@ -98,7 +98,7 @@ class BasketOption:
 
     def get_bs_price(self):
         
-        if len(weights) > 1.:
+        if len(self.weights) > 1.:
             raise ValueError('Number of assets seems to be >1. Use Levy price instead')
             
         d1 = 1/(self.vol*(self.time)**0.5)*(np.log(self.prices/self.strike)\
