@@ -44,7 +44,7 @@ class BasketOption:
             
     def get_levy_price(self):
         """
-        Use the Levy formula to approximate the price of a European basket call option.
+        Use the Levy formula to approximate price of option.
         """
     
         discount = np.exp(-self.rate*self.time)
@@ -69,3 +69,29 @@ class BasketOption:
         self.levy_price = discount * (m1 * stats.norm.cdf(d1) - self.strike * stats.norm.cdf(d2))
 
         return self.levy_price
+
+    def get_mc_price(self, n_paths=10000):
+        """
+        Use Monte Carlo to estimate price of option.
+
+        Parameters
+        ----------
+        n_paths : int, optional
+            Number of asset price paths to simulate
+            Default is 10,000
+        """
+
+        rn = stats.multivariate_normal(np.zeros(len(self.weights)), cov=self.corr).rvs(size=n_paths)
+
+        wt = self.time**0.5 * rn
+        asset_prices = self.prices * np.exp((self.rate-0.5*self.vol**2)*self.time + self.vol * wt)
+        
+        # Check if basket option or one-asset option
+        if len(self.weights)>1:
+            payoffs = (np.sum(self.weights*asset_prices, axis=1)-self.strike).clip(0)
+        else:
+            payoffs = (asset_prices - self.strike).clip(0)
+
+        self.mc_price = np.mean(payoffs)
+
+        return self.mc_price
