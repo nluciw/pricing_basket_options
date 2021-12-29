@@ -67,6 +67,9 @@ class SimulateBasketPrices:
             Risk-free interest rate
         '''
         
+        if (len(base_price)>1) & (len(base_price)!=self.n_assets):
+            raise ValueError('Number of prices should be 1 or equal to n_assets')
+
         prices = self.get_price_list(base_price)
         times = np.random.randint(1,16,self.n_prices)
         vols = np.abs((np.random.rand(self.n_prices)-0.5)*0.05 + vol)
