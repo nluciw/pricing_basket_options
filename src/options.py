@@ -95,3 +95,17 @@ class BasketOption:
         self.mc_price = np.mean(payoffs)
 
         return self.mc_price
+
+    def get_bs_price(self):
+        
+        if len(weights) > 1.:
+            raise ValueError('Number of assets seems to be >1. Use Levy price instead')
+            
+        d1 = 1/(self.vol*(self.time)**0.5)*(np.log(self.prices/self.strike)\
+                                            + (self.rate+(0.5*self.vol**2))*self.time)
+        d2 = d1 - self.vol*self.time**0.5
+        
+        self.bs_price = stats.norm.cdf(d1)*self.prices\
+                        - stats.norm.cdf(d2)*self.strike*np.exp(-self.rate*self.time)
+        
+        return self.bs_price
