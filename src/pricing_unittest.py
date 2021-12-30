@@ -5,11 +5,9 @@ from options import BasketOption
 
 class TestOptionPricer(unittest.TestCase):
     '''
-    The parameters for these unit tests are taken from Krekel, de Kock,
-    & Man (2004), published in Wilmott (pp 82-89).
+    The parameters and price for these unit tests are taken from 
+    Krekel, de Kock, & Man (2004), published in Wilmott (pp 82-89).
     '''
-
-
     def test_levy(self):
         self.weights = np.ones(4)*0.25
         self.prices = np.ones(4)*100.
