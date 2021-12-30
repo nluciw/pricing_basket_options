@@ -73,7 +73,19 @@ The figure below shows the error between the network estimates and the Black-Sch
 
 Based on the above figures, these outliers seem to be driven by cases at the edges of the simulated distribution, especially with respect to asset price, time to maturity, and--relatedly--the price-to-strike ratio.
 
+---
 
+## Code info
+
+The code is built on a two workhorse classes, *BasketOption* and *SimulateBasketPrices*. 
+
+*BasketOption* allows definition of parameters such as asset prices, weights, strike, etc and allows option pricing with Levy, Black-Scholes, Monte Carlo, or a neural network model. The Levy pricing method has an associated unit test called *pricing_unittest.py*. 
+
+*SimulateBasket* allows simulation of N-asset basket options with randomness injected into the prices, weights, volatility, time-to-maturity, and strike value. Any N can be chosen. Base (i.e. average) values for each of these are set by the user and random noise is added for each simulated option (normal noise is added to the prices, weights are random uniform on [0,1] with the contstraint that they add to 1, a random uniform on [-0.025,0.025] is added to the volatility, time-to-maturity is a random uniform integer on [1,15], and strike is randomly scaled by a uniform on [0.5,1.5]).
+
+*PricingNetwork* creates and fits the neural network model. 
+
+Timing of the pricing methods can be found at the bottom of *main_analysis.ipynb*. I use a Python decorator on each of the pricing methods to estimate the runtime.
 
 
 
