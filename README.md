@@ -77,6 +77,8 @@ Based on the above figures, these outliers seem to be driven by cases at the edg
 
 ## Code info
 
+This code was written in Python 3.9. Requisite libraries can be installed with *pip install -r requirements.txt*.
+
 The code is built on a two workhorse classes, *BasketOption* and *SimulateBasketPrices*. 
 
 *BasketOption* allows definition of parameters such as asset prices, weights, strike, etc and allows option pricing with Levy, Black-Scholes, Monte Carlo, or a neural network model. The Levy pricing method has an associated unit test called *pricing_unittest.py*. 
