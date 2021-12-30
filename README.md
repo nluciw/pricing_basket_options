@@ -36,12 +36,12 @@ This analysis was organized as follows:
 In each analysis, the base properties of the 4-asset basket option were:
 
 * prices = [100,100,100,100]
-* volatility = 0.4
+* volatility = [0.4,0.4,0.4,0.4]
 * off-diag correlations = 0.5
 * strike price = 100
 * risk-free interest rate = 0.
 
-During simulation, all but the correlation matrix and the interest rate had noise added for each realization. The constant correlation matrix is a limitation of this work, and future efforts will benefit from incorporating the correlations into the neural network inputs. Other relevant parameters were random uniforms across a range of reasonable values. See the pairplots in *main_analysis.ipynb* for insight into all distributions. See the bottom of this README for specific details in the random noise added to these parameters.
+During simulation, all but the correlation matrix and the interest rate had noise added for each realization. The constant correlation matrix is a limitation of this work, and future efforts will benefit from incorporating the correlations into the neural network inputs. Other relevant parameters were random uniforms across a range of reasonable values. See the pairplots in *main_analysis.ipynb* for insight into all distributions. See the bottom of this README for specific details in the random noise added to these parameters and other important parameters like basket weights and time-to-maturity.
 
 Brief results follow. For full details of the analysis, see *main_analysis.ipynb*.
 
