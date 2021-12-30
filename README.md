@@ -33,6 +33,16 @@ This analysis was organized as follows:
 1. For a subset of the testing data, compare option prices from the neural network model with those from a Monte Carlo solver.
 1. Compare the neural network with Black-Scholes on single-asset options. Instead of re-training the network for single-asset options, I used a "trick" to allow single-asset option pricing with the neural network trained on 4-asset baskets. I did this by inputting the price of the single asset as all prices in the 4-asset network, with very small weights for the last 3 assets. E.g. for an single-asset option with an asset price of 100, I input prices=[100,100,100,100] and weights=[0.997, 0.001, 0.001, 0.001] into the network.
 
+In each analysis, the base properties of the 4-asset basket option were:
+
+* prices = [100,100,100,100]
+* volatility = 0.4
+* off-diag correlations = 0.5
+* strike price = 100
+* risk-free interest rate = 0.
+
+During simulation, all but the correlation matrix and the interest rate had noise added for each realization. The constant correlation matrix is a limitation of this work, and future efforts will benefit from incorporating the correlations into the neural network inputs. Other relevant parameters were random uniforms across a range of reasonable values. See the pairplots in *main_analysis.ipynb* for insight into all distributions. See the bottom of this README for specific details in the random noise added to these parameters.
+
 Brief results follow. For full details of the analysis, see *main_analysis.ipynb*.
 
 ## 2. Comparison of neural network with ground truth (Levy's formula) on test data (n=2000) 
@@ -88,8 +98,6 @@ The code is built on a two workhorse classes, *BasketOption* and *SimulateBasket
 *PricingNetwork* creates and fits the neural network model. 
 
 Timing of the pricing methods can be found at the bottom of *main_analysis.ipynb*. I use a Python decorator on each of the pricing methods to estimate the runtime.
-
-
 
 
 
